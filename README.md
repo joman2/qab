@@ -2,7 +2,7 @@
 
 -->
 
-# `QAB`
+# QAB
 
 <!--
 #### <code>❯ TBD </code>
@@ -66,10 +66,10 @@
     ├── __init__.py
     └── crawler.py
 ```
-
+<!--
 ---
 
-<!-- ## Modules
+ ## Modules
 
 <details closed><summary>.</summary>
 
@@ -137,20 +137,31 @@ Execute the test suite using the following command:
 #### Uninstall the desired package_name
 
 ```python
-  uninstall_app(package_name):
+  def uninstall_app(package_name):
 ```
 
 | Argument   | Type       | Description                           |
 | :---------- | :--------- | :---------------------------------- |
 | `package_name` | `string` | **Mandatory**. Package to uninstall |
 
+```python
+   def click_in_image(image_path, connection: u2.connect = None):
+```
+
+| Argument   | Type       | Description                           |
+| :---------- | :--------- | :---------------------------------- |
+| `image_path1` | `image_path2` | **Mandatory**. Package to uninstall |
+
 ---
 
 ## Project Roadmap
+(no specific order)
 
 - [X] **`Task 1`**: <strike>Make it usable</strike>
-- [ ] **`Task 2`**: ...;
-- [ ] **`Task 3`**: ....
+- [ ] **`Task 2`**: read and analyse logs;
+- [ ] **`Task 3`**: record testing;
+- [ ] **`Task 4`**: support multiple resolutions;
+- [ ] **`Task 5`**: Package the project for PyPI;
 
 ---
 
@@ -204,7 +215,7 @@ Contributions are welcome! Here are several ways you can contribute:
 
 ## License
 
-This project is protected under the [MIT](https://choosealicense.com/licenses) License. For more details, refer to the [LICENSE](https://choosealicense.com/licenses/) file.
+This project is protected under the [MIT](https://choosealicense.com/licenses/mit/) License. For more details, refer to the [LICENSE](https://github.com/joman2/qab/blob/main/README.md) file.
 
 ---
 

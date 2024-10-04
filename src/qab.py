@@ -2,7 +2,7 @@ import uiautomator2 as u2
 import cv2
 import numpy as np
 from time import sleep
-import os, subprocess
+import os, subprocess, signal
 
 def find_image(image_path1, image_path2, tolerance):
   """
@@ -55,6 +55,9 @@ def find_image(image_path1, image_path2, tolerance):
   # If the match is not good enough, return None
   return None, None
 
+def find_text(text):
+    # TODO
+    return
 
 def wait_for_reference():
     return
@@ -80,6 +83,16 @@ def get_files_in_folder(folder_path):
 
     return files
 
+def get_device_resolution():
+    """
+    Retrieves the device's screen resolution.
+
+    Returns:
+        str: A string representing the device's screen resolution in the format "heightxwidth".
+    """
+    d = u2.connect()
+    return str(f"{d.info['displayHeight']}x{d.info['displayWidth']}")
+
 def clear_logcat_buffer():
   """Clears the Android logcat buffer using adb."""
   subprocess.run(['adb', 'logcat', '-c'])
@@ -102,8 +115,16 @@ def is_app_installed(package_name):
     print(f"App {package_name} {app_info} is installed")
     return app_info
 
+def uninstall_app(package_name: str):
+    """
+    Uninstalls an application with the given package name.
 
-def uninstall_app(package_name):
+    Args:
+        package_name (str): The name of the package to be uninstalled.
+
+    Returns:
+        None
+    """
     d = u2.connect()
     d.app_stop(package_name)
     d.app_uninstall(package_name)
@@ -127,6 +148,16 @@ def check_onscreen_app():
 #print(check_onscreen_app())
 
 def click_in_image(image_path, connection: u2.connect = None):
+    """
+    Simulates a click on a given image within the current screen.
+
+    Args:
+        image_path (str): The path to the image to be clicked.
+        connection (u2.connect, optional): The connection object. Defaults to None.
+
+    Returns:
+        int: 1 if the click was successful, -1 if the image was not found.
+    """
     if connection is None:
         #print("Connecting...")
         d = u2.connect()
@@ -182,36 +213,49 @@ def start_app(package_name):
     d = u2.connect()
 
     d.app_stop('com.github.uiautomator')
-
+    print(f"Starting {package_name}...")
     d.app_stop(package_name)
     d.app_start(package_name)
     return d, package_name
 
-def start_recording(output_file_path: str):
+def start_recording() -> int:
     """
-    Starts recording the screen of the device connected to the computer using adb. Receives the output path as an argument
-    """
-    # Create .mp4 file if it doesn't exist
-    if not os.path.exists(filename):
-        with open(output_file_path, 'wb') as f:
-            pass
+    Starts recording the screen of the device connected to the computer using adb screenrecorder.
 
-    command = f"adb shell screenrecord {output_file_path}"
-    subprocess.Popen(command, shell=True)
+    Args:
+        output_file_path (str): The path where the recorded screen will be saved.
 
-def stop_recording():
+    Returns:
+        int: The process ID of the running ADB command.
     """
-    TODO: stop recording the screen of the device connected to the computer and save it to a file in the given filepath
-    """
-    comando = "adb shell ps | grep screenrecord | awk '{print $2}'"
-    pid = subprocess.check_output(comando, shell=True).decode('utf-8').strip()
-    subprocess.call(["kill", pid])
-    print("Gravação parada!")
+    # TODO: create a tmp folder: sdcard/qab_tmp
+    
+    command = f"adb shell screenrecord sdcard/qab_tmp/recording.mp4"
+    process = subprocess.Popen(command, shell=True)
+    print(f"Recording started with PID: {process.pid}")
+    return process.pid
 
-#start_recording('screencast.mp4')
-#sleep(5)
-#stop_recording()
-#start_app('eu.nordeus.topeleven.android')
+def stop_recording(adb_recording_pid: str):
+    """
+    Stops the recording process with the given ADB recording PID.
+
+    Args:
+        adb_recording_pid (int): The PID of the ADB recording process.
+
+    Returns:
+        None
+    """
+    os.kill(adb_recording_pid, signal.SIGILL)
+    print("Recording stopped")
+    return
+
+
+'''recording_PID = start_recording()
+print(f'recording PID: {recording_PID}')
+sleep(5)
+start_app('com.android.vending')
+sleep(10)
+stop_recording(recording_PID)'''
 
 def app_flow(test_name: str):
     """
